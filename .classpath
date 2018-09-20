@@ -9,12 +9,12 @@
 	<classpathentry kind="var" path="wpiutil" sourcepath="wpiutil.sources"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/CTRE_Phoenix-sources.jar"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/CTRE_Phoenix.jar" sourcepath="/USERLIBS_DIR/CTRE_Phoenix-sources.jar"/>
+	<classpathentry kind="var" path="navx"/>
 	<classpathentry kind="lib" path="C:/Users/rcorn/wpilib/user/RobotLib/RobotLib.jar" sourcepath="C:/Users/rcorn/wpilib/user/RobotLib/RobotLib-sources.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:file:/C:/Users/rcorn/wpilib/user/RobotLib/RobotLib.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/rcorn/wpilib/user/RobotLib/RobotLib-sources.jar" sourcepath="C:/Users/rcorn/wpilib/user/RobotLib/RobotLib-sources.jar"/>
-	<classpathentry kind="var" path="USERLIBS_DIR/navx_frc.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -53,25 +53,18 @@ TRIGGER					Shift gear box low/high.
 Right Joystick
 Button Name				Function
 -----------------------------------------------------------------------------------
-TRIGGER					Toggle alternate driving mode.
 TOP_RIGHT				Lock buddy bar (extend linear actuator to 50%).
+TOP_LEFT				Auto move lift to switch height.
 TOP_BACK				Release buddy bar (retract linear actuator to 0%).
 
 Utility Joystick
 Button Name				Function
 -----------------------------------------------------------------------------------
 TRIGGER					Toggle Claw Fingers gripping the Power Cube.
-TOP_MIDDLE				Manually toggle Claw motors in ejecting direction.
+TOP_MIDDLE				Manually toggle Claw motors in ejecting direction (spit).
 TOP_BACK				Manually toggle Claw motors in the intake direction.
-
-Proposed:
-TOP_MIDDLE				Toggle lift position hold.
-TOP_LEFT				Toggle Claw motors in the intake direction.
-TOP_RIGHT				Toggle Claw motors in the ejecting (spit) direction.
-
-Proposed 2:
-TOP_LEFT				Auto move lift to switch height.
-TOP_RIGHT				Toggle class intake motors with auto shut off.
+TOP_LEFT				Auto move lift to vault height.
+TOP_RIGHT				Toggle Claw intake motors with auto shut off.
 
 LaunchPad
 Button Name				Function
