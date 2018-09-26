@@ -208,7 +208,7 @@ public class Grabber
 		
 	    public void run()
 	    {
-	    	double	stopCurrent;
+	    	double	stopCurrent, time = Util.timeStamp();
 	    	
 	    	Util.consoleLog();
 	    	
@@ -226,11 +226,17 @@ public class Grabber
 	    		motorsIn(.50);
 	    		sleep(250);
 	    		
-    	    	while (!isInterrupted() && robot.isEnabled() && Devices.intakeMotorL.getOutputCurrent() < stopCurrent)	// 15 // 5.0
+    	    	while (!isInterrupted() && robot.isEnabled() && 
+    	    			!(Devices.intakeMotorL.getOutputCurrent() > stopCurrent ||
+    	    			 Devices.intakeMotorR.getOutputCurrent() > stopCurrent))	// 15 // 5.0
     	    	{
     	            // We sleep since JS updates come from DS every 20ms or so. We wait 50ms so this thread
     	            // does not run at the same time as the teleop thread.
-    	    		LCD.printLine(9, "cube motor current=%f", Devices.intakeMotorL.getOutputCurrent());
+    	    		LCD.printLine(9, "cube motor current L=%.2f  R=%.2f", Devices.intakeMotorL.getOutputCurrent(),
+    	    				Devices.intakeMotorR.getOutputCurrent());
+    	    		
+    	    		if (Util.getElaspedTime(time) > 7) autoIntakeThread.interrupt();
+    	    		
     	            sleep(50);
     	    	}
     	    	
@@ -244,6 +250,7 @@ public class Grabber
 			
 	    	autoIntake = false;
 			autoIntakeThread = null;
+			
 			updateDS();
 	    }
 	}	// end of AutoIntake thread class.

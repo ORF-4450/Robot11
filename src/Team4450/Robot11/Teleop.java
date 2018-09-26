@@ -176,7 +176,8 @@ class Teleop
 					Devices.winchEncoder.get(), Devices.winchSwitch.get());
 			LCD.printLine(6, "yaw=%.2f, total=%.2f, rate=%.2f, hdng=%.2f", Devices.navx.getYaw(), 
 					Devices.navx.getTotalYaw(), Devices.navx.getYawRate(), Devices.navx.getHeading());
-			LCD.printLine(7, "intake current=%f", Devices.intakeMotorL.getOutputCurrent());
+			LCD.printLine(7, "intake current L=%.2f  R=%.2f", Devices.intakeMotorL.getOutputCurrent(),
+					 Devices.intakeMotorR.getOutputCurrent());
 			LCD.printLine(8, "pressureV=%.2f  psi=%d", robot.monitorCompressorThread.getVoltage(), 
 					robot.monitorCompressorThread.getPressure());
 			LCD.printLine(9, "srx l=%d rot=%.2f - r=%d rot=%.2f d=%.2f", 
