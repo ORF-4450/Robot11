@@ -17,6 +17,18 @@ Operates the robot "Odyssey" for FRC game "FIRST POWER UP".
 3) Right click on the project in Eclipse and select "Refresh"
 
 ****************************************************************************************************************
+Version 11.4
+
+*	This branch represents my code after 2018 comp season with updates to autonomous code and inverting the
+	signs on motor control so + means forward. All work prior to start of Pathfinder branch. There may be
+	changes in Sean's code for the Portland event that are not recorded here.
+*	Includes fixes made to grabber auto pickup code fall 2018 to protect against motor burnouts experienced
+	during practice for Girls Gen.
+*	Updated Assignments file to reflect control changes made during comp season but not recorded.
+
+R. Corn
+September 26, 2018
+
 Version 11.3
 
 *	As of completion of clone robot.
