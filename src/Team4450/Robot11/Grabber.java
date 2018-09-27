@@ -235,7 +235,8 @@ public class Grabber
     	    		LCD.printLine(9, "cube motor current L=%.2f  R=%.2f", Devices.intakeMotorL.getOutputCurrent(),
     	    				Devices.intakeMotorR.getOutputCurrent());
     	    		
-    	    		if (Util.getElaspedTime(time) > 7) autoIntakeThread.interrupt();
+    	    		// Turn off auto intake after some number of seconds to protect the motors.
+    	    		if (Util.getElaspedTime(time) > 6) autoIntakeThread.interrupt();
     	    		
     	            sleep(50);
     	    	}
