@@ -1,7 +1,7 @@
 /**
  * 2018 competition robot code.
  *
- * For Robot "TBA" built for FRC game "FIRST POWER UP".
+ * For Robot "Odyssey" built for FRC game "FIRST POWER UP".
 */
 
 package Team4450.Robot11;
@@ -22,13 +22,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * creating this project, you must also update the build.properties file.
  */
 
+@SuppressWarnings("deprecation")
 public class Robot extends SampleRobot 
 {
-  static final String  	PROGRAM_NAME = "RAC11-01.12.18-01";
+  static final String  	PROGRAM_NAME = "RAC11ID-09.26.18-01";
 
   public Properties		robotProperties;
   
   public boolean		isClone = false, isComp = false;
+  
+  public RobotState		currentRobotState = RobotState.boot, lastRobotState = RobotState.boot;
     	
   DriverStation.Alliance	alliance;
   int                       location, matchNumber;
@@ -37,7 +40,10 @@ public class Robot extends SampleRobot
   Thread               	monitorBatteryThread, monitorPDPThread;
   MonitorCompressor		monitorCompressorThread;
   CameraFeed			cameraThread;
-      
+  
+  Teleop 				teleOp;
+  Autonomous 			autonomous;
+  
   // Constructor.
   
   public Robot() //throws IOException
@@ -47,12 +53,20 @@ public class Robot extends SampleRobot
 	try
 	{
 		Util.CustomLogger.setup();
-    }
-    catch (Exception e) {Util.logException(e);}
-      
-    try
-    {
-    	Util.consoleLog(PROGRAM_NAME);
+		
+		// Catch any uncaught exceptions and record them in our log file. 
+		
+		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() 
+		{
+			public void uncaughtException(Thread t, Throwable e)
+			{
+		        Util.consoleLog("Uncaught exception from thread " + t);
+		        Util.logException(e);
+		    }
+
+		});
+
+		Util.consoleLog(PROGRAM_NAME);
 
     	Util.consoleLog("RobotLib=%s", LibraryVersion.version);
     }
@@ -66,6 +80,8 @@ public class Robot extends SampleRobot
    	try
     {
    		Util.consoleLog();
+        
+        lastRobotState = RobotState.init;
 
    		LCD.clearAll();
    		LCD.printLine(1, "Mode: RobotInit");
@@ -94,13 +110,25 @@ public class Robot extends SampleRobot
    		
    		Devices.InitializeCANTalonDrive();
 		
+   		Devices.wheelEncoder.setReverseDirection(false);
+   		//Devices.wheelEncoder2.setReverseDirection(false);
+
+   		// Clone has reversed winch so we need invert the power so utility stick
+		// operation remains the same.
+		
+		if (isClone) Devices.climbWinch.setInverted(true);
+   		
+		// Competition needs encoder reversed to read + as winch goes up.
+		
+   		if (isComp) Devices.winchEncoder.setReverseDirection(false);
+
    		Devices.robotDrive.stopMotor();
    		Devices.robotDrive.setSafetyEnabled(false);
    		Devices.robotDrive.setExpiration(0.1);
              
-   		// Create NavX object here so it has time to calibrate before we
-   		// use it. Takes 10 seconds. Must appear before CamerFeed is created.
-   		
+   		// Create NavX object here since must done before CameraFeed is created (don't remember why).
+   		// Navx calibrates at power on and must complete before robot moves. Takes 12 seconds.
+
    		Devices.navx = NavX.getInstance(NavX.PortType.SPI);
    		
    		Devices.navx.dumpValuesToNetworkTables();
@@ -122,7 +150,9 @@ public class Robot extends SampleRobot
       
        	cameraThread = CameraFeed.getInstance(); 
        	cameraThread.start();
-   		
+		
+       	lastRobotState = currentRobotState;
+       	
    		Util.consoleLog("end");
     }
     catch (Exception e) {Util.logException(e);}
@@ -135,6 +165,8 @@ public class Robot extends SampleRobot
 	  try
 	  {
 		  Util.consoleLog();
+          
+          lastRobotState = RobotState.disabled;
 
 		  LCD.printLine(1, "Mode: Disabled");
 
@@ -148,7 +180,7 @@ public class Robot extends SampleRobot
 		  SmartDashboard.putBoolean("TargetLocked", false);
 		  SmartDashboard.putBoolean("Overload", false);
 		  SmartDashboard.putNumber("AirPressure", 0);
-		  
+
 		  Util.consoleLog("end");
 	  }
 	  catch (Exception e) {Util.logException(e);}
@@ -161,6 +193,8 @@ public class Robot extends SampleRobot
       try
       {
     	  Util.consoleLog();
+          
+          lastRobotState = RobotState.auto;
 
     	  LCD.clearAll();
     	  LCD.printLine(1, "Mode: Autonomous");
@@ -168,15 +202,8 @@ public class Robot extends SampleRobot
     	  SmartDashboard.putBoolean("Disabled", false);
     	  SmartDashboard.putBoolean("Auto Mode", true);
         
-    	  // Make available the alliance (red/blue) and staring position as
-    	  // set on the driver station or FMS.
-        
-    	  alliance = Devices.ds.getAlliance();
-    	  location = Devices.ds.getLocation();
-    	  eventName = Devices.ds.getEventName();
-    	  matchNumber = Devices.ds.getMatchNumber();
-    	  gameMessage = Devices.ds.getGameSpecificMessage();
-
+    	  getMatchInformation();
+    	  
     	  // This code turns off the automatic compressor management if requested by DS.
     	  Devices.compressor.setClosedLoopControl(SmartDashboard.getBoolean("CompressorEnabled", true));
 
@@ -186,16 +213,21 @@ public class Robot extends SampleRobot
              
     	  // Start autonomous process contained in the Autonomous class.
         
-    	  Autonomous autonomous = new Autonomous(this);
+    	  autonomous = new Autonomous(this);
         
     	  autonomous.execute();
-        
-    	  autonomous.dispose();
     	  
-    	  SmartDashboard.putBoolean("Auto Mode", false);
-    	  Util.consoleLog("end");
+    	  lastRobotState = currentRobotState;
       }
       catch (Exception e) {Util.logException(e);}
+      
+      finally
+      {
+      	  autonomous.dispose();
+
+      	  SmartDashboard.putBoolean("Auto Mode", false);
+      	  Util.consoleLog("end");
+      }
   }
 
   // Called at the start of the teleop period.
@@ -205,6 +237,8 @@ public class Robot extends SampleRobot
       try
       {
     	  Util.consoleLog();
+          
+          currentRobotState = RobotState.teleop;
 
     	  LCD.clearAll();
       	  LCD.printLine(1, "Mode: Teleop");
@@ -212,16 +246,8 @@ public class Robot extends SampleRobot
       	  SmartDashboard.putBoolean("Disabled", false);
       	  SmartDashboard.putBoolean("Teleop Mode", true);
         
-      	  alliance = Devices.ds.getAlliance();
-      	  location = Devices.ds.getLocation();
-    	  eventName = Devices.ds.getEventName();
-    	  matchNumber = Devices.ds.getMatchNumber();
-    	  gameMessage = Devices.ds.getGameSpecificMessage();
-        
-          Util.consoleLog("Alliance=%s, Location=%d, FMS=%b event=%s match=%d msg=%s", 
-        		  		   alliance.name(), location, Devices.ds.isFMSAttached(), eventName, matchNumber, 
-        		  		   gameMessage);
-
+      	  getMatchInformation();
+      	  
     	  // Reset persistent fault flags in control system modules.
           Devices.PDP.clearStickyFaults();
           Devices.compressor.clearAllPCMStickyFaults();
@@ -231,19 +257,29 @@ public class Robot extends SampleRobot
         
           // Start operator control process contained in the Teleop class.
         
-          Teleop teleOp = new Teleop(this);
+          teleOp = new Teleop(this);
        
           teleOp.OperatorControl();
-        
-          teleOp.dispose();
-        	
-          Util.consoleLog("end");
+          
+          lastRobotState = currentRobotState;
        }
        catch (Exception e) {Util.logException(e);} 
+       
+       finally
+       {
+           teleOp.dispose();
+         	
+           Util.consoleLog("end");
+       }
   }
     
   public void test() 
   {
+	  Util.consoleLog();
+	  
+	  currentRobotState = RobotState.test;
+	  
+	  lastRobotState = currentRobotState;
   }
 
   // Start usb camera server for single camera.
@@ -253,5 +289,30 @@ public class Robot extends SampleRobot
 	  Util.consoleLog("%s:%d", cameraName, device);
 
       CameraServer.getInstance().startAutomaticCapture(cameraName, device);
+  }
+  
+  // Get information about the current match fromm the FMS or DS.
+  
+  public void getMatchInformation()
+  {
+  	  alliance = Devices.ds.getAlliance();
+  	  location = Devices.ds.getLocation();
+	  eventName = Devices.ds.getEventName();
+	  matchNumber = Devices.ds.getMatchNumber();
+	  gameMessage = Devices.ds.getGameSpecificMessage();
+    
+      Util.consoleLog("Alliance=%s, Location=%d, FMS=%b event=%s match=%d msg=%s", 
+    		  		   alliance.name(), location, Devices.ds.isFMSAttached(), eventName, matchNumber, 
+    		  		   gameMessage);
+  }
+  
+  public enum RobotState
+  {
+	  boot,
+	  init,
+	  disabled,
+	  auto,
+	  teleop,
+	  test
   }
 }
