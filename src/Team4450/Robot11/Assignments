@@ -1,0 +1,102 @@
+Port and Button Assignments.
+
+CAN Ports
+Port	Device			Description
+-----------------------------------------------------------------------------------
+1		CanTalon		Left front drive motor.
+2		CanTalon		Left rear drive motor.
+3		CanTalon		Right front drive motor.
+4		CanTalon		Right rear drive motor.
+5		CanTalon    	Left Cube Grabber motor.
+6		CanTalon    	Right Cube Grabber motor.
+
+PWM Ports
+Port	Device			Description
+-----------------------------------------------------------------------------------
+0		Talon			Winch motor (climb-CIM).
+1		Talon			Winch motor (cube lift).
+
+PCM 0 Ports
+Port	Device blk-pos	Description
+-----------------------------------------------------------------------------------
+0		ValveDA 0		A side high/low speed shifter. Set Low speed. 
+1		ValveDA	0		B side high/low speed shifter. Set High speed.
+2		ValveDA 1		A side grabber. Open grabber.
+3		ValveDA 1		B side grabber. Close grabber.
+4		ValveDA 2		A side grabber deploy (in).
+5		ValveDA	2		B side grabber deploy (out).                                                                                                  
+
+PCM 1 Ports
+Port	Device blk-pos	Description
+-----------------------------------------------------------------------------------
+
+
+Digital I/O Ports
+Port	Device			Description
+-----------------------------------------------------------------------------------
+0		Encoder			Gearbox encoder. Orange = 5v, blue = signal.
+1		Encoder			Gearbox encoder. black = ground, yellow = signal.
+2		Encoder			Winch encoder. Orange = 5v, blue = signal.
+3		Encoder			Winch encoder. black = ground, yellow = signal.
+
+
+Analog I/O Ports
+Port	Device			Description
+-----------------------------------------------------------------------------------
+0		Pressure Sensor	Report air pressure.
+
+Left Joystick
+Button Name				Function
+-----------------------------------------------------------------------------------
+TRIGGER					Shift gear box low/high.
+
+Right Joystick
+Button Name				Function
+-----------------------------------------------------------------------------------
+TOP_RIGHT				Lock buddy bar (extend linear actuator to 50%).
+TOP_LEFT				Auto move lift to switch height.
+TOP_BACK				Release buddy bar (retract linear actuator to 0%).
+
+Utility Joystick
+Button Name				Function
+-----------------------------------------------------------------------------------
+TRIGGER					Toggle Claw Fingers gripping the Power Cube.
+TOP_MIDDLE				Manually toggle Claw motors in ejecting direction (spit).
+TOP_BACK				Manually toggle Claw motors in the intake direction.
+TOP_LEFT				Auto move lift to vault height.
+TOP_RIGHT				Toggle Claw intake motors with auto shut off.
+
+LaunchPad
+Button Name				Function
+-----------------------------------------------------------------------------------
+BUTTON_BLUE				Deploy fork lift arms.
+BUTTON_RED_RIGHT		Toggle wrist folding in or out.
+BUTTON_RED				Shift gears.
+BUTTON_BLUE_RIGHT		Toggle Claw intake motors with auto shut off.
+BUTTON_YELLOW			Toggle winch brake.
+BUTTON_GREEN			Reset wheel encoder.
+ROCKER_LEFT_FRONT		Switch Cameras.
+ROCKER_LEFT_BACK		Toggle drive talon brake mode.
+ROCKER_RIGHT			Switch climb winch encoder on/off.
+
+Dashboard Indicators/Controls
+Name					Type			Description
+-----------------------------------------------------------------------------------
+AutoTarget				boolean			True when targeting code is running.
+TargetLocked			boolean			True when targeting completed with target
+                                        detected.
+Disabled				boolean			True when robot is disabled.
+Auto Mode				boolean			True when robot is in autonomous mode.
+Teleop Mode				boolean			True when robot is in tele-operated mode.
+FMS						boolean			True when robot is connected to the FMS.
+Overload				boolean			True when steering assist is on.
+AirPressure				Number			Is set to the current air pressure in psi.
+Brakes					boolean			True when drive Talons are in brake mode.
+Deployed				boolean			True when cube grabber is extended.
+Intake					boolean			True when cube grabber motors running in intake direction.
+Spit					boolean			True when cube grabber motors running in spit direction.
+Grabber					boolean			True when cube grabber is in the open position.
+Winch					boolean			True when climb winch is selected.
+AutoGrab				boolean			True when intake auto grab is enabled.
+Brake                	boolean			True when climber brake engaged.
+		  

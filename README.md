@@ -2,7 +2,7 @@
 FRC Team 4450 2018 Robot Control program.
 
 This is the 2018 competition robot control program created by the Olympia Robotics Federation (FRC Team 4450).
-Operates the robot "TBA" for FRC game "FIRST POWER UP".
+Operates the robot "Odyssey" for FRC game "FIRST POWER UP".
 
 ## Instructions to setup development environment
 1) Follow the instructions [here](http://wpilib.screenstepslive.com/s/4485/m/13809/l/599681-installing-eclipse-c-java) to setup the JDK, Eclipse, and the FRC plugins.
@@ -17,9 +17,35 @@ Operates the robot "TBA" for FRC game "FIRST POWER UP".
 3) Right click on the project in Eclipse and select "Refresh"
 
 ****************************************************************************************************************
+Version 11.4
+
+*	This branch represents my code after 2018 comp season with updates to autonomous code and inverting the
+	signs on motor control so + means forward. All work prior to start of Pathfinder branch. There may be
+	changes in Sean's code for the Portland event that are not recorded here.
+*	Includes fixes made to grabber auto pickup code fall 2018 to protect against motor burnouts experienced
+	during practice for Girls Gen.
+*	Updated Assignments file to reflect control changes made during comp season but not recorded.
+
+R. Corn
+September 26, 2018
+
+Version 11.3
+
+*	As of completion of clone robot.
+
+R. Corn
+March 16, 2018
+
+Version 11.2
+
+*	As of the end of Mt. Vernon week 1 competition.
+
+R. Corn
+March 5, 2018
+
 Version 11.1
 
-* Update to work with 2018 plugins.
+* 	Update to work with 2018 plugins.
 
 S. Flo
 January 4, 2018
